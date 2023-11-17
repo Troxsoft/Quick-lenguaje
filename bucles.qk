@@ -1,0 +1,7 @@
+
+-- bucles en quick !!!
+
+var index = 0
+bucle 100 : index : std.escribir( #+# @[index] 1 )
+-- array nombre
+-- nombre.push()

@@ -1,0 +1,5 @@
+
+std.escribir(resta #-# 10 1 )
+std.escribir(suma #+# 10 1 )
+std.escribir(multiplicacion #*# 10 2 )
+std.escribir(divicion #/# 20 2 )

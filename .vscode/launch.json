@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense para saber los atributos posibles.
+    // Mantenga el puntero para ver las descripciones de los existentes atributos.
+    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "console": "integratedTerminal",
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'Quick'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=Quick",
+                    "--package=Quick"
+                ],
+                "filter": {
+                    "name": "Quick",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "ejecuta",
+                "./holamundo.qk"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'Quick'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=Quick",
+                    "--package=Quick"
+                ],
+                "filter": {
+                    "name": "Quick",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
