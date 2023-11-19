@@ -12,8 +12,78 @@ pub fn get_std() -> Funciones {
     fun.add_funcion(error_std, "error".to_string());
     fun.add_funcion(escribir_std, "escribir".to_string());
     fun.add_funcion(escribir_color_txt_std, "escribir_colort".to_string());
+    fun.add_funcion(eliminar_std_var, "eliminar_var".to_string());
+    fun.add_funcion(eliminar_std_vector, "eliminar_lista".to_string());
+    fun.add_funcion(eliminar_std_vector_index, "eliminar_indice".to_string());
     //fun.add_funcion(escribir_color_fondo_std, "escribir_colorf".to_string());
+    fun.add_funcion(get_vector_indice, "obt_indice".to_string());
+    fun.add_funcion(escribir_std_vector, "escribir_lista".to_string());
     fun
+}
+
+fn eliminar_std_vector(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 1) == false {
+        return Err(ErrorLeng::new(
+            "no se recibio la cantidad correcta de parametros".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if !programa.delete_vector(params[0].clone()) {
+        return Err(ErrorLeng::new(
+            "hubo un error al eliminar la variable ".to_string(),
+            programa,
+            false,
+        ));
+    }
+    return Ok(programa);
+}
+
+fn eliminar_std_vector_index(
+    params: Vec<String>,
+    mut programa: Programa,
+) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 2) == false {
+        return Err(ErrorLeng::new(
+            "no se recibio la cantidad correcta de parametros".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if utils::es_numero(params[1].clone()) == false {
+        return Err(ErrorLeng::new(
+            "el indice a eliminar debe ser un numero, pero se recibio un texto :(".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    //print!("'{}'", params[1].clone().parse::<usize>().unwrap());
+    if !programa.delete_vector_index(params[0].clone(), params[1].clone().parse().unwrap()) {
+        return Err(ErrorLeng::new(
+            "hubo un error al eliminar la variable ".to_string(),
+            programa,
+            false,
+        ));
+    }
+    return Ok(programa);
+}
+
+fn eliminar_std_var(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 1) == false {
+        return Err(ErrorLeng::new(
+            "no se recibio la cantidad correcta de parametros".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if !programa.delete_var(params[0].clone()) {
+        return Err(ErrorLeng::new(
+            "hubo un error al eliminar la variable ".to_string(),
+            programa,
+            false,
+        ));
+    }
+    return Ok(programa);
 }
 fn error_std(params: Vec<String>, programa: Programa) -> Result<Programa, ErrorLeng> {
     if utils::verificar_len(params.clone(), 1) == false {
@@ -32,6 +102,35 @@ Error ):
     }
     return Err(ErrorLeng::new(format!("{}", params[0]), programa, false));
 }
+
+fn get_vector_indice(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    let mut params2: Vec<String> = params.clone();
+    if utils::verificar_len(params, 2) == false {
+        return Err(ErrorLeng::new(
+            "la cantidad de parametros no es correcta".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if utils::es_numero(params2[1].clone()) == false {
+        return Err(ErrorLeng::new(
+            "el indice debe ser un numero".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    let mut pro3: Programa = programa.clone();
+    pro3.set_variable(
+        pro3.clone(),
+        "ret".to_string(),
+        pro3.clone()
+            .get_vector_variable(params2[0].clone())
+            .unwrap()[params2[1].clone().parse::<usize>().unwrap()]
+        .clone(),
+    );
+    return Ok(pro3);
+}
+
 fn escribir_std(params: Vec<String>, programa: Programa) -> Result<Programa, ErrorLeng> {
     if utils::verificar_len(params.clone(), 1) == false {
         return Err(ErrorLeng::new(
@@ -84,4 +183,33 @@ fn escribir_color_txt_std(params: Vec<String>, programa: Programa) -> Result<Pro
         ));
     }
     return Err(ErrorLeng::new_ignore(programa2));
+}
+fn escribir_std_vector(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 1) == false {
+        return Err(ErrorLeng::new(
+            "
+--------------------------------------------
+Error ): 
+            FALTAN PARAMETROS
+    
+-------------------------------------------
+    "
+            .to_string(),
+            programa.clone(),
+            false,
+        ));
+    } else {
+        if programa.get_vector_variable(params[0].clone()).is_none() {
+            return Err(ErrorLeng::new(
+                "no existe la lista".to_string(),
+                programa.clone(),
+                false,
+            ));
+        }
+        println!(
+            "{:?}",
+            programa.get_vector_variable(params[0].clone()).unwrap()
+        );
+        return Ok(programa);
+    }
 }

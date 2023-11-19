@@ -19,7 +19,7 @@ pub struct Programa {
 
 impl Programa {
     pub fn new() -> Self {
-        Programa {
+        let mut pro: Programa = Programa {
             funciones: Vec::new(),
             detener: false,
             salir: false,
@@ -27,8 +27,61 @@ impl Programa {
             variables_nombres: Vec::new(),
             variables_vectores: Vec::new(),
             variables_vectores_nombres: Vec::new(),
-        }
+        };
+        pro.add_variable("ret".to_string(), "".to_string());
+        return pro;
     }
+    pub fn delete_var(&mut self, nombre: String) -> bool {
+        if self.get_variable(nombre.clone()).is_none() {
+            return false;
+        } else {
+            let mut i: usize = 0;
+            while i < self.variables_nombres.len() {
+                if self.variables_nombres[i] == nombre.clone() {
+                    self.variables_nombres.remove(i);
+                    self.variables.remove(i);
+                    return true;
+                }
+                i += 1;
+            }
+        }
+        return false;
+    }
+
+    pub fn delete_vector(&mut self, nombre: String) -> bool {
+        if self.get_vector_variable(nombre.clone()).is_none() {
+            return false;
+        } else {
+            let mut i: usize = 0;
+            while i < self.variables_vectores_nombres.len() {
+                if self.variables_vectores_nombres[i] == nombre.clone() {
+                    self.variables_vectores.remove(i);
+                    self.variables_vectores_nombres.remove(i);
+                    return true;
+                }
+                i += 1;
+            }
+        }
+        return false;
+    }
+
+    pub fn delete_vector_index(&mut self, nombre: String, index: usize) -> bool {
+        if self.get_vector_variable(nombre.clone()).is_none() {
+            return false;
+        } else {
+            let mut i: usize = 0;
+            while i < self.variables_vectores_nombres.len() {
+                if self.variables_vectores_nombres[i] == nombre.clone() {
+                    self.variables_vectores[i].remove(index);
+                    //self.variables_vectores_nombres[i].remove(index);
+                    return true;
+                }
+                i += 1;
+            }
+        }
+        return false;
+    }
+
     pub fn get_variables_all_nombre(&self) -> Vec<String> {
         return self.variables_nombres.clone();
     }
@@ -52,8 +105,8 @@ impl Programa {
     pub fn get_variable(&mut self, nombre: String) -> Option<String> {
         let mut i = 0;
         while i < self.variables_nombres.len() {
-            if self.variables_nombres[0] == nombre {
-                return Some(self.variables[0].clone());
+            if self.variables_nombres[i] == nombre {
+                return Some(self.variables[i].clone());
             }
             i += 1;
         }
@@ -92,7 +145,7 @@ impl Programa {
         let mut i: usize = 0;
         while i < self.variables_vectores_nombres.len() {
             if self.variables_vectores_nombres.clone()[i] == nombre {
-                return Some(self.variables_vectores[1].clone());
+                return Some(self.variables_vectores[i].clone());
             }
             i += 1;
         }
@@ -593,6 +646,7 @@ impl Programa {
                                         ));
                                     } else {
                                         programa = eje.ok().unwrap();
+                                        //println!("hola");
                                     }
                                 }
                             }
