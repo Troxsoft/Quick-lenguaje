@@ -1,0 +1,3 @@
+lista:juan
+var: hola = 0
+bucle 200:hola:juan.agregar(hola)
