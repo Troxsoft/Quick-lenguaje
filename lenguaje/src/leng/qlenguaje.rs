@@ -1,5 +1,5 @@
 use core::num;
-use std::collections::btree_map::VacantEntry;
+use std::{collections::btree_map::VacantEntry, fs::read};
 
 use super::error_leng::{self, ErrorLeng};
 use crate::{
@@ -88,8 +88,42 @@ impl Programa {
     }
     //<vec> $·$·$·$:juan$·$·$·$:juan$·$·$·$:
     //vectores / arrays
-    //pub fn get_vector_variable(&mut self, nombre: String) -> Vec<String> {}
+    pub fn get_vector_variable(&mut self, nombre: String) -> Option<Vec<String>> {
+        let mut i: usize = 0;
+        while i < self.variables_vectores_nombres.len() {
+            if self.variables_vectores_nombres.clone()[i] == nombre {
+                return Some(self.variables_vectores[1].clone());
+            }
+            i += 1;
+        }
+        None
+    }
 
+    pub fn get_vector_variable_all_valor(&mut self) -> Vec<Vec<String>> {
+        return self.variables_vectores.clone();
+    }
+    pub fn get_vector_variable_all_nombre(&mut self) -> Vec<String> {
+        return self.variables_vectores_nombres.clone();
+    }
+    pub fn add_to_vector_element(&mut self, nombre: String, valor: String) -> ErrorLeng {
+        let mut i: usize = 0;
+        while i < self.variables_vectores_nombres.len() {
+            if self.variables_vectores_nombres.clone()[i] == nombre {
+                self.variables_vectores[i].push(valor);
+                return ErrorLeng::new_ignore(self.clone());
+            }
+            i += 1;
+        }
+        return ErrorLeng::new(
+            "no se encontro la variable".to_string(),
+            self.clone(),
+            false,
+        );
+    }
+    pub fn create_add_vector_element(&mut self, nombre: String) {
+        self.variables_vectores.push(Vec::new());
+        self.variables_vectores_nombres.push(nombre);
+    }
     pub fn add_funcion(&mut self, f: Funciones) {
         self.funciones.push(f);
     }
@@ -103,13 +137,14 @@ impl Programa {
             let mut programa3 = programa2.clone();
             let mut programa4 = programa3.clone();
             let mut programa5 = programa4.clone();
+            let mut programa6: Programa = programa5.clone();
             //preprosesado
 
             linea = linea.trim();
             if linea != "" && !linea.starts_with("--") {
                 let mut linea_String = linea.to_string();
 
-                if programa.salir {
+                if programa6.clone().salir {
                     return None;
                 }
                 if !linea_String.starts_with("bucle") {
@@ -122,6 +157,7 @@ impl Programa {
 
                         //println!("'{}'", &programa.get_variable(kok.clone()).unwrap().clone());
                     }
+
                     // MACROS
                     if linea_String.contains("#+#") {
                         let mut jb: bool = linea_String.contains("#+#");
@@ -359,7 +395,26 @@ impl Programa {
                         es_variable = true;
                     }
                 }
-                if linea.starts_with("var") {
+
+                let mut es_variable_vector: bool = false;
+                //let ini40:String = linea.sta
+                //no funciones
+                //if linea.to_string().ends_with(")") ==
+                let mut nom_vector: String = "".to_string();
+                for inicio in programa.get_vector_variable_all_nombre() {
+                    if linea.starts_with(&inicio) {
+                        es_variable_vector = true;
+                        nom_vector = inicio;
+                    }
+                }
+
+                let mut push_vector_variable: bool = false;
+                if es_variable_vector {
+                    if linea.starts_with(&format!("{}.agregar(", nom_vector.clone())) {
+                        push_vector_variable = true;
+                    }
+                }
+                if linea.starts_with("var:") {
                     let mut hfj = linea.split("=");
                     let mut hfj_vec: Vec<String> = Vec::new();
                     for mm2 in hfj {
@@ -368,13 +423,13 @@ impl Programa {
 
                     if utils::verificar_len(hfj_vec.clone(), 2) == false {
                         return Some(ErrorLeng::new(
-                            "estructura incorrecta pruebe esta: 'var NOMBRE = VALOR'".to_string(),
+                            "estructura incorrecta pruebe esta: 'var: NOMBRE = VALOR'".to_string(),
                             programa3.clone(),
                             false,
                         ));
                     } else {
                         let nombre_var_3: String =
-                            hfj_vec[0].trim().to_string()[4..hfj_vec[0].len() - 1].to_string();
+                            hfj_vec[0].trim().to_string()[5..hfj_vec[0].len() - 1].to_string();
                         if programa.get_variable(nombre_var_3.clone()).is_some() {
                             return Some(ErrorLeng::new(
                                 "la variable ya existe :(".to_string(),
@@ -391,6 +446,18 @@ impl Programa {
                         }
                     }
                     //if let Some(arg1) = hfj1.nth(0) {}
+                } else if push_vector_variable {
+                    if !linea.ends_with(")") {
+                        return Some(ErrorLeng::new(
+                            "la funcion no termino en: ')' ".to_string(),
+                            programa5.clone(),
+                            false,
+                        ));
+                    }
+                    let mut nuevo_elemento: String =
+                        linea[nom_vector.len() + 9..linea.len() - 1].to_string();
+                    nuevo_elemento = nuevo_elemento.trim().to_string();
+                    programa.add_to_vector_element(nom_vector, nuevo_elemento);
                 } else if es_variable {
                     let mut hfj = linea.split("=");
                     let mut hfj_vec: Vec<String> = Vec::new();
@@ -399,7 +466,7 @@ impl Programa {
                     }
                     if utils::verificar_len(hfj_vec.clone(), 2) == false {
                         return Some(ErrorLeng::new(
-                            "estructura incorrecta pruebe esta: 'var NOMBRE = VALOR'".to_string(),
+                            "estructura incorrecta pruebe esta: 'NOMBRE = VALOR'".to_string(),
                             programa3.clone(),
                             false,
                         ));
@@ -407,6 +474,23 @@ impl Programa {
                         let nombre_var_3: String = hfj_vec[0].trim().to_string();
                         programa.set_variable(programa.clone(), nombre_var_3, hfj_vec[1].clone());
                         //println!("'{}'", nombre_var_3);
+                    }
+                }
+                //lista: numeros-1-10
+                else if linea.starts_with("lista:") {
+                    let mut nombre_vector: String = linea[6..linea.len()].to_string();
+                    nombre_vector = nombre_vector.trim().to_string();
+                    if programa
+                        .get_vector_variable(nombre_vector.clone())
+                        .is_some()
+                    {
+                        return Some(ErrorLeng::new(
+                            "ya existe la lista".to_string(),
+                            programa.clone(),
+                            false,
+                        ));
+                    } else {
+                        programa.create_add_vector_element(nombre_vector.clone());
                     }
                 } else if linea.starts_with("bucle") {
                     let mut hfj = linea.split(":");
@@ -461,12 +545,12 @@ impl Programa {
                     //funciones
                     if linea.to_string().ends_with(")") == false {
                         return Some(ErrorLeng::new(
-                            "no se termino en ) la funcion".to_string(),
+                            format!("no se termino en ) la funcion:[{}]", linea),
                             programa,
                             false,
                         ));
                     }
-                    if programa.detener == false {
+                    if programa6.clone().detener == false {
                         let mut c2 = linea.split("(");
 
                         if let Some(arg1) = c2.nth(0) {
@@ -498,15 +582,17 @@ impl Programa {
                                         .unwrap()
                                         .funcion(ch4_comando)
                                         .unwrap()(
-                                        params, programa2.clone()
+                                        params, programa.clone()
                                     );
-                                    if eje.err2() {
+                                    if eje.is_err() {
                                         //error_mas_reciente = eje;
                                         return Some(ErrorLeng::new(
-                                            eje.message(),
+                                            eje.err().unwrap().message(),
                                             programa,
                                             false,
                                         ));
+                                    } else {
+                                        programa = eje.ok().unwrap();
                                     }
                                 }
                             }

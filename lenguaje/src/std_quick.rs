@@ -15,9 +15,9 @@ pub fn get_std() -> Funciones {
     //fun.add_funcion(escribir_color_fondo_std, "escribir_colorf".to_string());
     fun
 }
-fn error_std(params: Vec<String>, programa: Programa) -> ErrorLeng {
+fn error_std(params: Vec<String>, programa: Programa) -> Result<Programa, ErrorLeng> {
     if utils::verificar_len(params.clone(), 1) == false {
-        return ErrorLeng::new(
+        return Err(ErrorLeng::new(
             "
 --------------------------------------------
 Error ): 
@@ -28,13 +28,13 @@ Error ):
             .to_string(),
             programa,
             false,
-        );
+        ));
     }
-    return ErrorLeng::new(format!("{}", params[0]), programa, false);
+    return Err(ErrorLeng::new(format!("{}", params[0]), programa, false));
 }
-fn escribir_std(params: Vec<String>, programa: Programa) -> ErrorLeng {
+fn escribir_std(params: Vec<String>, programa: Programa) -> Result<Programa, ErrorLeng> {
     if utils::verificar_len(params.clone(), 1) == false {
-        return ErrorLeng::new(
+        return Err(ErrorLeng::new(
             "
 --------------------------------------------
 Error ): 
@@ -43,21 +43,22 @@ Error ):
 -------------------------------------------
     "
             .to_string(),
-            programa,
+            programa.clone(),
             false,
-        );
+        ));
     }
     println!("{}", params[0]);
-    ErrorLeng::new_ignore(programa)
+    return Ok(programa);
 }
-fn escribir_color_txt_std(params: Vec<String>, programa: Programa) -> ErrorLeng {
+
+fn escribir_color_txt_std(params: Vec<String>, programa: Programa) -> Result<Programa, ErrorLeng> {
     let mut programa2 = programa.clone();
     if utils::verificar_len(params.clone(), 2) == false {
-        return ErrorLeng::new(
+        return Err(ErrorLeng::new(
             "faltan parametros o hay demasiados".to_string(),
             programa.clone(),
             false,
-        );
+        ));
     }
     if params[1] == "rojo" {
         println!("{}", params[0].red());
@@ -76,11 +77,11 @@ fn escribir_color_txt_std(params: Vec<String>, programa: Programa) -> ErrorLeng 
     } else if params[1] == "azul claro" {
         println!("{}", params[0].cyan());
     } else {
-        return ErrorLeng::new(
+        return Err(ErrorLeng::new(
             "color no valido o no implementado en esta funcion".to_string(),
             programa,
             false,
-        );
+        ));
     }
-    return ErrorLeng::new_ignore(programa2);
+    return Err(ErrorLeng::new_ignore(programa2));
 }

@@ -3,7 +3,7 @@ use std::fs::read;
 use crate::leng::{error_leng::ErrorLeng, qlenguaje::Programa};
 #[derive(Clone)]
 pub struct Funciones {
-    funciones: Vec<fn(Vec<String>, Programa) -> ErrorLeng>,
+    funciones: Vec<fn(Vec<String>, Programa) -> Result<Programa, ErrorLeng>>,
     nombre_funciones: Vec<String>,
     prefix: String,
 }
@@ -17,11 +17,18 @@ impl Funciones {
         }
     }
 
-    pub fn add_funcion(&mut self, func: fn(Vec<String>, Programa) -> ErrorLeng, nombre: String) {
+    pub fn add_funcion(
+        &mut self,
+        func: fn(Vec<String>, Programa) -> Result<Programa, ErrorLeng>,
+        nombre: String,
+    ) {
         self.funciones.push(func);
         self.nombre_funciones.push(nombre);
     }
-    pub fn funcion(&self, nombre: String) -> Option<fn(Vec<String>, Programa) -> ErrorLeng> {
+    pub fn funcion(
+        &self,
+        nombre: String,
+    ) -> Option<fn(Vec<String>, Programa) -> Result<Programa, ErrorLeng>> {
         let mut i = 0;
         while i < self.funciones.len() {
             if self.nombre_funciones[i].eq(&nombre) {
