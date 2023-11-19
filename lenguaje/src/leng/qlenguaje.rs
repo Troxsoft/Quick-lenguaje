@@ -181,7 +181,7 @@ impl Programa {
         self.funciones.push(f);
     }
 
-    pub fn init_program(mut programa: Programa, codigo: String) -> Option<ErrorLeng> {
+    pub fn init_program(mut programa: Programa, codigo: String) -> Result<Programa, ErrorLeng> {
         let mut lineas = codigo.lines();
 
         //let mut error_mas_reciente: ErrorLeng = ErrorLeng::new_ignore(programa2.clone());
@@ -198,7 +198,7 @@ impl Programa {
                 let mut linea_String = linea.to_string();
 
                 if programa6.clone().salir {
-                    return None;
+                    return Ok(programa);
                 }
                 if !linea_String.starts_with("bucle") {
                     // VARIABLES
@@ -236,7 +236,7 @@ impl Programa {
                                 i91 += 1;
                             }
                             if !utils::es_numero(hfj_vec[index_macro + 1].trim().to_string()) {
-                                return Some(ErrorLeng::new(
+                                return Err(ErrorLeng::new(
                                     "esta macro es de sumar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -245,7 +245,7 @@ impl Programa {
                             } else {
                                 let num1: isize = hfj_vec[index_macro + 1].parse().unwrap();
                                 if !utils::es_numero(hfj_vec[index_macro + 2].trim().to_string()) {
-                                    return Some(ErrorLeng::new(
+                                    return Err(ErrorLeng::new(
                                     "esta macro es de sumar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -291,7 +291,7 @@ impl Programa {
                                 i91 += 1;
                             }
                             if !utils::es_numero(hfj_vec[index_macro + 1].trim().to_string()) {
-                                return Some(ErrorLeng::new(
+                                return Err(ErrorLeng::new(
                                     "esta macro es de dividir.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -300,7 +300,7 @@ impl Programa {
                             } else {
                                 let num1: isize = hfj_vec[index_macro + 1].parse().unwrap();
                                 if !utils::es_numero(hfj_vec[index_macro + 2].trim().to_string()) {
-                                    return Some(ErrorLeng::new(
+                                    return Err(ErrorLeng::new(
                                     "esta macro es de dividir.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -347,7 +347,7 @@ impl Programa {
                                 i91 += 1;
                             }
                             if !utils::es_numero(hfj_vec[index_macro + 1].trim().to_string()) {
-                                return Some(ErrorLeng::new(
+                                return Err(ErrorLeng::new(
                                     "esta macro es de multiplicar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -356,7 +356,7 @@ impl Programa {
                             } else {
                                 let num1: isize = hfj_vec[index_macro + 1].parse().unwrap();
                                 if !utils::es_numero(hfj_vec[index_macro + 2].trim().to_string()) {
-                                    return Some(ErrorLeng::new(
+                                    return Err(ErrorLeng::new(
                                     "esta macro es de multiplicar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -405,7 +405,7 @@ impl Programa {
                                 i91 += 1;
                             }
                             if !utils::es_numero(hfj_vec[index_macro + 1].trim().to_string()) {
-                                return Some(ErrorLeng::new(
+                                return Err(ErrorLeng::new(
                                     "esta macro es de restar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -414,7 +414,7 @@ impl Programa {
                             } else {
                                 let num1: isize = hfj_vec[index_macro + 1].parse().unwrap();
                                 if !utils::es_numero(hfj_vec[index_macro + 2].trim().to_string()) {
-                                    return Some(ErrorLeng::new(
+                                    return Err(ErrorLeng::new(
                                     "esta macro es de restar.no se permite texto solo numeros. :("
                                         .to_string(),
                                     programa,
@@ -475,7 +475,7 @@ impl Programa {
                     }
 
                     if utils::verificar_len(hfj_vec.clone(), 2) == false {
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             "estructura incorrecta pruebe esta: 'var: NOMBRE = VALOR'".to_string(),
                             programa3.clone(),
                             false,
@@ -484,7 +484,7 @@ impl Programa {
                         let nombre_var_3: String =
                             hfj_vec[0].trim().to_string()[5..hfj_vec[0].len() - 1].to_string();
                         if programa.get_variable(nombre_var_3.clone()).is_some() {
-                            return Some(ErrorLeng::new(
+                            return Err(ErrorLeng::new(
                                 "la variable ya existe :(".to_string(),
                                 programa3.clone(),
                                 false,
@@ -501,7 +501,7 @@ impl Programa {
                     //if let Some(arg1) = hfj1.nth(0) {}
                 } else if push_vector_variable {
                     if !linea.ends_with(")") {
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             "la funcion no termino en: ')' ".to_string(),
                             programa5.clone(),
                             false,
@@ -518,7 +518,7 @@ impl Programa {
                         hfj_vec.push(mm2.to_string());
                     }
                     if utils::verificar_len(hfj_vec.clone(), 2) == false {
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             "estructura incorrecta pruebe esta: 'NOMBRE = VALOR'".to_string(),
                             programa3.clone(),
                             false,
@@ -537,7 +537,7 @@ impl Programa {
                         .get_vector_variable(nombre_vector.clone())
                         .is_some()
                     {
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             "ya existe la lista".to_string(),
                             programa.clone(),
                             false,
@@ -557,7 +557,7 @@ impl Programa {
                     //println!("{}", "m");
                     if numero3.is_err() {
                         //println!("{}", "m");
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             "el valor pasado en el bucle no es un numero".to_string(),
                             programa,
                             false,
@@ -571,11 +571,11 @@ impl Programa {
                         let mut mkkk3 = programa.set_variable2(var.clone(), "0".to_string());
 
                         if mkkk3.err2() {
-                            return Some(mkkk3);
+                            return Err(mkkk3);
                         }
                         //println!("{}", "m");
                         if programa.get_variable(var.clone()).is_none() {
-                            return Some(ErrorLeng::new(
+                            return Err(ErrorLeng::new(
                                 "no se encontro la variable".to_string(),
                                 programa.clone(),
                                 false,
@@ -585,11 +585,11 @@ impl Programa {
                         while i < numero {
                             //println!("{}", i);
                             //programa.set_variable2(var.clone(), format!("{}", i));
-                            let err: Option<ErrorLeng> =
-                                Programa::init_program(programa.clone(), hfj_vec[2].clone());
-                            if err.is_some() {
-                                return Some(err.unwrap());
+                            let err = Programa::init_program(programa.clone(), hfj_vec[2].clone());
+                            if err.is_err() {
+                                return Err(err.err().unwrap());
                             } //************************************************* */
+                            programa = err.ok().unwrap();
                             i += 1;
                             programa.set_variable2(var.clone(), format!("{}", i));
                         }
@@ -597,7 +597,7 @@ impl Programa {
                 } else {
                     //funciones
                     if linea.to_string().ends_with(")") == false {
-                        return Some(ErrorLeng::new(
+                        return Err(ErrorLeng::new(
                             format!("no se termino en ) la funcion:[{}]", linea),
                             programa,
                             false,
@@ -639,7 +639,7 @@ impl Programa {
                                     );
                                     if eje.is_err() {
                                         //error_mas_reciente = eje;
-                                        return Some(ErrorLeng::new(
+                                        return Err(ErrorLeng::new(
                                             eje.err().unwrap().message(),
                                             programa,
                                             false,
@@ -657,6 +657,6 @@ impl Programa {
 
             //c2.next()
         }
-        return None;
+        return Ok(programa);
     }
 }

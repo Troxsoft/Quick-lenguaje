@@ -6,7 +6,7 @@ use lenguaje::{
     std_quick::get_std,
 };
 
-const VERSION: &str = "0.0.1";
+const VERSION: &str = "0.0.2";
 fn main() {
     if let Some(arg1) = env::args().nth(1) {
         if arg1 == "crear" {
@@ -42,11 +42,12 @@ fn main() {
                 let codigo: String = fs::read_to_string(h29).unwrap();
                 let codigo2: String = codigo.clone();
 
-                Programa::init_program(programa, codigo)
-                    .unwrap_or_else(|| -> ErrorLeng {
-                        return ErrorLeng::new_ignore(programa2);
-                    })
-                    .err();
+                let pro = Programa::init_program(programa, codigo);
+                if pro.is_err() {
+                    pro.err().unwrap().err();
+                } else {
+                    programa = pro.ok().unwrap();
+                }
             } else {
                 println!(
                     "
@@ -70,11 +71,12 @@ fn main() {
                 let codigo: String = fs::read_to_string(h29).unwrap();
                 let codigo2: String = codigo.clone();
 
-                Programa::init_program(programa, codigo)
-                    .unwrap_or_else(|| -> ErrorLeng {
-                        return ErrorLeng::new_ignore(programa2);
-                    })
-                    .err();
+                let pro = Programa::init_program(programa, codigo);
+                if pro.is_err() {
+                    pro.err().unwrap().err();
+                } else {
+                    programa = pro.ok().unwrap();
+                }
             } else {
                 println!(
                     "
