@@ -1,0 +1,4 @@
+var: hola = 0
+std.eliminar_var(hola)
+-- da un error porque la variable no existe y el interpetre la asimila como una funcion y no la encuentra
+hola = 2 
