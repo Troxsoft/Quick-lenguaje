@@ -1,3 +1,5 @@
+use std::fs;
+
 use crate::{
     funciones::fstructure::Funciones,
     leng::{error_leng::ErrorLeng, qlenguaje::Programa},
@@ -22,8 +24,44 @@ pub fn get_std() -> Funciones {
     fun.add_funcion(mayor_numero_std, "es_mayor".to_string());
     fun.add_funcion(menor_numero_std, "es_menor".to_string());
     fun.add_funcion(igual_txt_numero_std, "es_igual".to_string());
+    fun.add_funcion(ejecuta_std_vector, "ejecuta".to_string());
+    fun.add_funcion(ejecuta_seguro_std_vector, "ejecuta_seguro".to_string());
+    fun.add_funcion(ejecuta_seguro_std_vector, "ejecuta_s".to_string());
     fun
 }
+
+
+fn ejecuta_std_vector(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 1) == false {
+        return Err(ErrorLeng::new(
+            "no se recibio la cantidad correcta de parametros".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    let gk = Programa::init_program(programa.clone(), fs::read_to_string(params[0].clone()).ok().unwrap());
+    return gk;
+}
+
+
+fn ejecuta_seguro_std_vector(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 1) == false {
+        return Err(ErrorLeng::new(
+            "no se recibio la cantidad correcta de parametros".to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    let mut kolo = Programa::new();
+    kolo.add_funcion(get_std());
+    let gk = Programa::init_program(kolo, fs::read_to_string(params[0].clone()).ok().unwrap());
+    if gk.is_err(){
+        return Err(gk.err().unwrap());
+    }
+
+    return Ok(programa);
+}
+
 
 
 fn menor_numero_std(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
