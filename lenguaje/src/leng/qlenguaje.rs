@@ -594,7 +594,36 @@ impl Programa {
                             programa.set_variable2(var.clone(), format!("{}", i));
                         }
                     }
-                } else {
+                } else if linea.to_string().starts_with("si condicional"){//jdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+                    let mut pt39h = linea[15..].to_string().clone();
+                    let mut split_pt39h = pt39h.split("ª");
+                    let mut varios:Vec<String> = Vec::new();
+                    for mm25 in split_pt39h {
+                        varios.push(mm25.trim().to_string());
+                    }
+                   
+                   if utils::verificar_len(varios.clone(), 3) == false{
+                    return Err(ErrorLeng::new(format!("la longitud de parametros necesarios en la estructura: 'si condicional' SON invalidos :(. ['{}']",linea), programa.clone(), false));
+                   }else{
+                        if varios.clone()[0] != "verdadero" &&varios.clone()[0] != "falso"{
+                            return Err(ErrorLeng::new(format!("Porfa verifica si el texto pasado tiene la siguiente sintaxis: 'verdadero' o 'falso' ['{}']",linea), programa.clone(), false));
+                        }else{
+                            if varios.clone()[0] == "verdadero"{
+                                let err90 = Programa::init_program(programa.clone(), varios[1].clone());
+                                if err90.is_err() {
+                                    return Err(err90.err().unwrap());
+                                } //************************************************* */
+                                programa = err90.ok().unwrap();
+                            }else{
+                                let err = Programa::init_program(programa.clone(), varios[2].clone());
+                                if err.is_err() {
+                                    return Err(err.err().unwrap());
+                                } //************************************************* */
+                                programa = err.ok().unwrap();
+                            }
+                        }
+                   }
+                }else {
                     //funciones
                     if linea.to_string().ends_with(")") == false {
                         return Err(ErrorLeng::new(
@@ -648,6 +677,8 @@ impl Programa {
                                         programa = eje.ok().unwrap();
                                         //println!("hola");
                                     }
+                                }else{
+                                    return  Err(ErrorLeng::new(format!("la funcion no tiene prefijo o no existe: `{}`",linea.to_string()), programa.clone(), false));
                                 }
                             }
                         }

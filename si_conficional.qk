@@ -1,0 +1,20 @@
+var: sisi = verdadero
+-- comprueba si 'sisi' es falso o verdadero
+--no funciona con bucles !!!TIENE MUCHOS BUGS :(
+
+si condicional @[sisi] ª std.escribir(verdadero) ª std.escribir(falso)
+
+--j()
+
+
+std.es_mayor(10000ª30)
+std.escribir( @[ret] )
+
+std.es_menor(100ª30)
+std.escribir( @[ret] )
+
+std.es_igual(juanªjuan)
+std.escribir( @[ret] )
+
+std.es_igual(100ª10)
+std.escribir( @[ret] )

@@ -18,7 +18,107 @@ pub fn get_std() -> Funciones {
     //fun.add_funcion(escribir_color_fondo_std, "escribir_colorf".to_string());
     fun.add_funcion(get_vector_indice, "obt_indice".to_string());
     fun.add_funcion(escribir_std_vector, "escribir_lista".to_string());
+
+    fun.add_funcion(mayor_numero_std, "es_mayor".to_string());
+    fun.add_funcion(menor_numero_std, "es_menor".to_string());
+    fun.add_funcion(igual_txt_numero_std, "es_igual".to_string());
     fun
+}
+
+
+fn menor_numero_std(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 2) == false {
+        return Err(ErrorLeng::new(
+            "
+--------------------------------------------
+Error ): 
+            FALTAN PARAMETROS
+    
+-------------------------------------------
+    "
+            .to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if utils::es_numero(params[0].clone())==false{
+        return  Err(ErrorLeng::new("el supuesto numero '1' no es un numero :( PRUEBA ESTA SINTAXIS 'std.es_mayor( @[n1] ª @[n2] )' ".to_string(), programa.clone(), false));
+    }
+    if utils::es_numero(params[1].clone())==false{
+        return  Err(ErrorLeng::new("el supuesto numero '2' no es un numero :( PRUEBA ESTA SINTAXIS 'std.es_mayor( @[n1] ª @[n2] )' ".to_string(), programa.clone(), false));
+    }
+    let mut pro = programa.clone();
+    if params[0].parse::<isize>().ok().unwrap() < params[1].parse::<isize>().ok().unwrap(){
+        pro.set_variable(pro.clone(),"ret".to_string(), "verdadero".to_string());
+    }else{
+        pro.set_variable(pro.clone(),"ret".to_string(), "falso".to_string());
+    }
+    return Ok(pro);
+}
+
+
+               
+
+
+
+
+
+
+
+
+
+fn igual_txt_numero_std(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 2) == false {
+        return Err(ErrorLeng::new(
+            "
+--------------------------------------------
+Error ): 
+            FALTAN PARAMETROS
+    
+-------------------------------------------
+    "
+            .to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    
+    let mut pro = programa.clone();
+    if params[0] == params[1]{
+        pro.set_variable(pro.clone(),"ret".to_string(), "verdadero".to_string());
+    }else{
+        pro.set_variable(pro.clone(),"ret".to_string(), "falso".to_string());
+    }
+    return Ok(pro);
+}
+fn mayor_numero_std(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {
+    if utils::verificar_len(params.clone(), 2) == false {
+        return Err(ErrorLeng::new(
+            "
+--------------------------------------------
+Error ): 
+            FALTAN PARAMETROS
+    
+-------------------------------------------
+    "
+            .to_string(),
+            programa.clone(),
+            false,
+        ));
+    }
+    if utils::es_numero(params[0].clone())==false{
+        return  Err(ErrorLeng::new("el supuesto numero '1' no es un numero :( PRUEBA ESTA SINTAXIS 'std.es_mayor( @[n1] ª @[n2] )' ".to_string(), programa.clone(), false));
+    }
+    if utils::es_numero(params[1].clone())==false{
+        return  Err(ErrorLeng::new("el supuesto numero '2' no es un numero :( PRUEBA ESTA SINTAXIS 'std.es_mayor( @[n1] ª @[n2] )' ".to_string(), programa.clone(), false));
+    }
+    let mut pro = programa.clone();
+    if params[0].parse::<isize>().ok().unwrap() > params[1].parse::<isize>().ok().unwrap(){
+        pro.set_variable(pro.clone(),"ret".to_string(), "verdadero".to_string());
+    }else{
+        pro.set_variable(pro.clone(),"ret".to_string(), "falso".to_string());
+    }
+    return Ok(pro);
 }
 
 fn eliminar_std_vector(params: Vec<String>, mut programa: Programa) -> Result<Programa, ErrorLeng> {

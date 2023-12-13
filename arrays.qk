@@ -1,3 +1,6 @@
 lista:juan
 var: hola = 0
-bucle 200:hola:juan.agregar(hola)
+bucle 100:hola:juan.agregar( #*# @[hola] 13 )
+std.escribir_lista(juan) 
+std.obt_indice(juanª0)
+std.escribir(@[ret])
